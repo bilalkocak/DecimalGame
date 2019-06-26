@@ -1,100 +1,21 @@
 import React from 'react';
-import './App.css';
+import './Game.css';
+import {EASY, MEDIUM, HARD} from '../../const/Modes'
+
 class Game extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            maxPow: 4,
-            items: [//daha sonra komponent yap
-                {
-                    rowValue: 3,
-                    colValue: 3,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 3,
-                    colValue: 2,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 3,
-                    colValue: 1,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 3,
-                    colValue: 0,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 2,
-                    colValue: 3,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 2,
-                    colValue: 2,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 2,
-                    colValue: 1,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 2,
-                    colValue: 0,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 1,
-                    colValue: 3,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 1,
-                    colValue: 2,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 1,
-                    colValue: 1,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 1,
-                    colValue: 0,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 0,
-                    colValue: 3,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 0,
-                    colValue: 2,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 0,
-                    colValue: 1,
-                    isActive: 0,
-                    binaryValue: 0
-                }, {
-                    rowValue: 0,
-                    colValue: 0,
-                    isActive: 0,
-                    binaryValue: 0
-                },
-            ],
+            maxPow: 0,
+            items: [],
             resultHorizontal: [],
             resultVertical: [],
             currentTotalVertical: [],
             currentTotalHorizontal: [],
             isTrueVertical: [],
             isTrueHorizontal: [],
+            isFinish: 0
         }
     }
 
@@ -108,12 +29,13 @@ class Game extends React.Component {
             currentTotalHorizontal,
             isTrueVertical,
             resultVertical,
-            isTrueHorizontal
+            isTrueHorizontal,
+            maxPow
         } = this.state;
 
 
-        let column = index % 4;
-        let row = Math.floor(index / 4);
+        let column = index % maxPow;
+        let row = Math.floor(index / maxPow);
 
 
         if (items[index].isActive) {
@@ -137,7 +59,7 @@ class Game extends React.Component {
         } else {
             isTrueHorizontal[row] = 0
         }
-
+        this.isFinish();
         this.setState({
             items,
             resultHorizontal,
@@ -153,15 +75,51 @@ class Game extends React.Component {
         return Math.floor(Math.random() * 10) % 2
     }
 
-    componentDidMount() {
-        let {
-            items,
-            resultHorizontal,
-            currentTotalVertical,
-            currentTotalHorizontal,
-            resultVertical,
-            maxPow
-        } = this.state;
+    isFinish = () => {
+
+        let {isTrueHorizontal, isTrueVertical, maxPow} = this.state;
+        let isCompleteHorizontal = 0;
+        let isCompleteVertical = 0;
+
+        isTrueHorizontal.map(x => {
+            isCompleteHorizontal += x;
+        });
+
+        isTrueVertical.map(x => {
+            isCompleteVertical += x;
+        });
+
+        let isFinish = isCompleteVertical + isCompleteHorizontal === maxPow * 2 ? 1 : 0;
+
+        this.setState({
+            isFinish
+        })
+    };
+
+    setItems = () => {
+        let items = [];
+        let maxPow = 0;
+        let resultHorizontal = [];
+        let currentTotalVertical = [];
+        let currentTotalHorizontal = [];
+        let resultVertical = [];
+
+        switch (this.props.mode) {
+            case 'easy':
+                items = EASY;
+                maxPow = 4;
+                break;
+
+            case 'medium':
+                items = MEDIUM;
+                maxPow = 6;
+                break;
+
+            case 'hard':
+                items = HARD;
+                maxPow = 8;
+                break;
+        }
 
 
         for (let i = 0; i < maxPow; i++) {
@@ -171,55 +129,119 @@ class Game extends React.Component {
             currentTotalVertical[i] = 0;
         }
 
-
-        items.map((item, index) => {
-            let randomBinary = this.randomBinary();
-            item.binaryValue = randomBinary;
-            let column = index % 4;
-            let row = Math.floor(index / 4);
-            console.log(resultVertical);
-            if (randomBinary) {
-                resultVertical[column] += Math.pow(2, items[index].rowValue);
-                resultHorizontal[row] += Math.pow(2, items[index].colValue);
+        do { // 0 sonucunun gelmesini istemiyoruz
+            for (let i = 0; i < maxPow; i++) {
+                resultVertical[i] = 0;
+                resultHorizontal[i] = 0;
             }
-        });
+            items.map((item, index) => {
+                let randomBinary = this.randomBinary();
+                item.binaryValue = randomBinary;
+                let column = index % maxPow;
+                let row = Math.floor(index / maxPow);
+                if (randomBinary) {
+                    resultVertical[column] += Math.pow(2, items[index].rowValue);
+                    resultHorizontal[row] += Math.pow(2, items[index].colValue);
+                }
+
+            });
+
+
+        } while (this.isItZero(resultHorizontal, resultVertical, maxPow)) ;
 
 
         this.setState({
             items,
             resultVertical,
-            resultHorizontal
+            resultHorizontal,
+            maxPow,
+            currentTotalVertical,
+            currentTotalHorizontal
         })
+    };
+
+
+    giveUpHandler = () => {
+        let {items} = this.state;
+
+        items.map(item => {
+            item.isActive = 0;
+            if (item.binaryValue !== 0) {
+                item.isActive = 1
+            }
+        });
+
+
+        this.setState({
+            isFinish: 1,
+            items
+        })
+    };
+
+    turnBackHandler = () => {
+        let {items} = this.state;
+
+        items.map(item => {
+            item.isActive = 0;
+        });
+        this.props.screen();
+    };
+
+
+    isItZero(resultHorizontal, resultVertical, maxPow) {
+
+        for (let i = 0; i < maxPow; i++) {
+            if (resultHorizontal[i] === 0 || resultVertical[i] === 0) {
+                return 1;
+            }
+        }
+
+        return 0;
+    };
+
+
+    componentDidMount() {
+
+        this.setItems()
 
 
     }
 
 
     render() {
-        const {items, resultHorizontal, isTrueVertical, resultVertical, isTrueHorizontal} = this.state;
+        const {
+            items,
+            resultHorizontal,
+            isTrueVertical,
+            resultVertical,
+            isTrueHorizontal,
+            maxPow,
+            isFinish
+        } = this.state;
+        const {mode} = this.props;
         return (
-
-                <div className="container">
+            <div>
+                <div className={"container " + mode + "Container"}>
                     {
                         items.map((item, index) => {
-                            if (index % 4 === 3) {
+                            if (index % maxPow === maxPow - 1) {
                                 return (
                                     <div style={{display: "flex"}}>
                                         <div
-                                            className={"item " + (items[index].isActive ? "activeItem" : "inactiveItem")}
+                                            className={"item " + mode + "Item " + (items[index].isActive ? "activeItem" : "inactiveItem")}
                                             onClick={this.clickHandler} id={index} key={index}>
                                             {item.isActive}
                                         </div>
                                         <div
-                                            className={"item " + (isTrueHorizontal[Math.floor(index / 4)] ? "resultItemTrue" : "resultItemFalse")}>
-                                            {resultVertical[Math.floor(index / 4)]}
+                                            className={"item " + mode + "Item " + (isTrueHorizontal[Math.floor(index / maxPow)] ? "resultItemTrue" : "resultItemFalse")}>
+                                            {resultVertical[Math.floor(index / maxPow)]}
                                         </div>
                                     </div>
                                 )
                             } else {
                                 return (
                                     <div
-                                        className={"item " + (items[index].isActive ? "activeItem" : "inactiveItem")}
+                                        className={"item " + mode + "Item " + (items[index].isActive ? "activeItem" : "inactiveItem")}
                                         onClick={this.clickHandler} id={index} key={index}>
                                         {item.isActive}
                                     </div>
@@ -232,14 +254,36 @@ class Game extends React.Component {
                         resultHorizontal.map((resultHorizontal, index) => {
                             return (
                                 <div
-                                    className={"item " + (isTrueVertical[index % 4] ? "resultItemTrue" : "resultItemFalse")}
+                                    className={"item " + mode + "Item " + (isTrueVertical[index % maxPow] ? "resultItemTrue " : "resultItemFalse ")}
                                     key={index}>
                                     {resultHorizontal}
                                 </div>
                             )
                         })
                     }
+
+
                 </div>
+                <div className="gameButtonArea">
+                    {
+                        //eğer oyun bitmişse geri dön ve baştan başlat butonları.
+                        //eğer oyun bitmemişse pes et (give up) butonu olacak.
+                        isFinish ?
+                            (
+                                <div className="button gameButton" onClick={this.turnBackHandler}>
+                                    Turn Back
+                                </div>
+                            )
+                            :
+                            (
+                                <div className="button gameButton" onClick={this.giveUpHandler}>
+                                    Give Up
+                                </div>
+                            )
+                    }
+                </div>
+            </div>
+
 
         );
     }
