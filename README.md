@@ -2,6 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 
 ## Decimal Game
+For the play : https://decimalgame.netlify.com/
 
 ![](https://raw.githubusercontent.com/bilalkocak/DecimalGame/master/ScreenShot/Easy.gif)
 
