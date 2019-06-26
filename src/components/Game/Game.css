@@ -1,0 +1,67 @@
+
+/*Renkler*/
+:root {
+    --bg: #46595e;
+    --blue: #4c70be;
+    --brown: #723420;
+    --white: #ffffff;
+    --green: #63d9c2;
+    --orange: #f99516;
+}
+
+.App {
+    text-align: center;
+    user-select: none;
+    background-color: var(--bg);
+}
+
+.container {
+    margin:50px auto;
+    display: flex;
+    flex-wrap: wrap;
+    width: 500px;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+.item {
+    display: flex;
+    width: 80px;
+    height: 80px;
+    border-radius: 80px;
+    color: var(--white);
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.inactiveItem{
+    background: var(--blue);
+}
+.activeItem{
+    background: var(--orange);
+}
+
+.resultItemFalse {
+    background: var(--brown);
+}
+
+.resultItemTrue{
+    background: var(--green);
+}
+
+
+.item:hover {
+    cursor: pointer;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
