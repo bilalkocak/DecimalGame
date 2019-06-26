@@ -8,21 +8,24 @@
     --green: #63d9c2;
     --orange: #f99516;
 
-    /*Container*/
-
+    /**********Container*****************/
+    /*Mobile*/
     --easyContainerWidthMobile:350px;
     --mediumContainerWidthMobile:364px;
     --hardContainerWidthMobile:370px;
-
+    /*Tablet*/
     --easyContainerWidthTablet:500px;
     --mediumContainerWidthTablet:560px;
     --hardContainerWidthTablet:595px;
-
+    /*Desktop*/
     --easyContainerWidthDesktop:500px;
     --mediumContainerWidthDesktop:518px;
     --hardContainerWidthDesktop:540px;
+    /***************************/
 
-    /* Item */
+
+
+    /********************* Item **************/
 
     /*Desktop*/
     --easyLengthDesktop: 80px;
@@ -38,6 +41,8 @@
     --easyLengthMobile: 60px;
     --mediumLengthMobile: 48px;
     --hardLengthMobile: 37px;
+
+    /***********************************/
 }
 
 .App {
